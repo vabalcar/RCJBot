@@ -1,0 +1,15 @@
+<project>
+    <property name = "ant.resources.lib.dir" value = "${ant.resources.dir}/lib" />
+    
+    <taskdef resource = "net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location = "${ant.resources.lib.dir}/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+    
+     <taskdef resource = "org/ant4eclipse/antlib.xml">
+        <classpath>
+            <pathelement location = "${ant.resources.lib.dir}/org.ant4eclipse_20180103_1904_28.jar"/>
+        </classpath>
+    </taskdef>
+</project>

@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<project>
+    <macrodef name = "mkdirPreserve">
+        <attribute name = "dir" />
+        <sequential>
+            <if>
+                <not>
+                    <available file = "${dir}" type = "dir" />
+                </not>
+                <then>
+                    <mkdir dir = "@{dir}" />
+                </then>
+            </if>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name = "runAnt">
+        <attribute name = "dir" default = "." />
+        <attribute name = "antfile" default = "build.xml" />
+        <sequential>
+            <condition property = "targets.to.invoke" value = "${ant.project.invoked-targets}">
+                <not>
+                    <isset property = "targets.to.invoke" />
+                </not>
+            </condition>
+            <ant  dir="@{dir}" antfile = "@{antfile}" target = "${targets.to.invoke}" inheritAll = "false" useNativeBasedir = "true">
+                <property name = "is.root.build" value = "false" />
+                <property name = "targets.to.invoke" value = "${targets.to.invoke}" />
+            </ant>
+        </sequential>
+    </macrodef>
+</project>

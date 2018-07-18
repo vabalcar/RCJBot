@@ -1,0 +1,12 @@
+<project>
+    <import file = "libImport.xml" />
+    <import file = "macros.xml" />
+    
+    <target name = "Export" depends = "Invoke">
+        <property name = "export.dir" value = "${export.base.dir}/${ant.project.name}" />
+        <mkdirPreserve dir = "${export.dir}" />
+        <move toDir = "${export.dir}">
+            <fileset dir = "${build.dir}" includes = "**/*" excludes  = ".project" />
+        </move>
+    </target>
+</project>

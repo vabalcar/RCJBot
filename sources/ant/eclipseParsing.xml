@@ -1,0 +1,28 @@
+<?xml version = "1.0" ?>
+<project>
+    <echo>Parsing Eclipse project "${ant.project.name}"...</echo>
+
+    <installedJREs default = "defaultJRE">
+        <jre id="defaultJRE" location="${java.home}" />
+    </installedJREs>
+
+    <getJdtClassPath workspaceDirectory = "${basedir}"
+                     projectName = "${ant.project.name}"
+                     pathId = "classpath" />
+                     
+    <getJdtClassPath workspaceDirectory = "${basedir}"
+                     projectName = "${ant.project.name}"
+                     property = "runtime.classpath.property"
+                     relative = "true"
+                     pathSeparator = " " />
+    
+    <getJdtSourcePath workspaceDirectory = "${basedir}"
+                      projectName = "${ant.project.name}"
+                      property = "src.dir" />
+    
+    <getJdtOutputPath workspacedirectory = "${basedir}"
+                      projectName = "${ant.project.name}"
+                      property = "bin.dir" />
+                      
+    <echo>Parsing completed</echo>
+</project>

@@ -1,0 +1,195 @@
+<?xml version = "1.0" ?>
+<project>
+    <property name = "jar.file" value = "${build.dir}/${ant.project.name}.jar" />
+    <property name = "project.doc.dir" value = "${doc.dir}/${ant.project.name}" />
+
+    <target name = "Clear">
+        <delete dir = "${bin.dir}" />
+    </target>
+    
+    <target name = "InitCache">
+        <if>
+            <and>
+                <isset property = "is.root.build" />
+                <equals arg1 = "${is.root.build}" arg2 = "false" />
+            </and>
+            <then>
+                <mkdirPreserve dir = "${cache.dir}" />
+            </then>
+        </if>
+    </target>
+
+    <target name = "Init" depends = "Clear, InitCache">
+        <mkdirPreserve dir = "${src.dir}" />
+        <mkdirPreserve dir = "${bin.dir}" />
+        <mkdirPreserve dir = "${build.dir}" />
+    </target>
+    
+    <target name = "CopyDependencies" depends = "Init">
+        <if>
+            <available file = "${dependencies.dir}/${ant.project.name}" type = "dir" />
+            <then>
+                <copy toDir = "${build.dir}">
+                    <fileset dir = "${dependencies.dir}/${ant.project.name}" includes = "**/*" />
+                </copy>
+                 <if>
+                    <and>
+                        <isset property = "is.root.build" />
+                        <equals arg1 = "${is.root.build}" arg2 = "false" />
+                    </and>
+                    <then>
+                        <mkdirPreserve dir = "${cache.dir}/${build.dir}" />
+                        <copy toDir = "${cache.dir}/${build.dir}">
+                            <fileset dir = "${dependencies.dir}/${ant.project.name}" includes = "**/*" />
+                        </copy>
+                    </then>
+                </if>
+            </then>
+        </if>
+    </target>
+    
+    <target name = "CopyResources" depends = "Init">
+        <if>
+            <available file = "${resources.dir}/${ant.project.name}" type = "dir" />
+            <then>
+                <copy toDir = "${build.dir}">
+                    <fileset dir = "${resources.dir}/${ant.project.name}" includes = "**/*" excludes  = ".project" />
+                </copy>
+            </then>
+        </if>
+    </target>
+    
+    <target name = "Compile" depends = "CopyDependencies, CopyResources">
+        <if>
+            <available file = "${cache.dir}/${jar.file}" />
+            <then>
+                <copy toDir = ".">
+                    <fileset dir = "${cache.dir}" includes = "${jar.file}" />
+                </copy>
+            </then>
+            <else>
+                <javac srcdir = "${src.dir}"
+                       destdir = "${bin.dir}"
+                       source = "${javac.compliance.level}"
+                       target = "${javac.compliance.level}"
+                       includeantruntime = "false"
+                       debug = "true"
+                       debuglevel = "lines,vars,source">
+                    <classpath refid = "classpath" />
+                </javac>
+            </else>
+        </if>
+    </target>
+    
+    <target name = "Build" depends = "Compile">
+        <if>
+            <not>
+                <available file = "${cache.dir}/${jar.file}" />
+            </not>
+            <then>
+                <path id = "filtered.classpath">
+                    <fileset dir = "${basedir}" includes = "${runtime.classpath.property}">
+                        <filename name = "${build.dir}/**/*" />
+                    </fileset>
+                </path>
+                
+                <manifestclasspath property = "basic.jar.classpath"
+                                   jarfile = "${jar.file}">
+                    <classpath refid = "filtered.classpath" />
+                </manifestclasspath>
+                
+                <if>
+                    <equals arg1 = "${basic.jar.classpath}" arg2 = "" trim = "true" />
+                    <then>
+                        <condition property = "jar.classpath" value = "${additional.jar.classpath}" else = "">
+                            <and>
+                                <isset property = "additional.jar.classpath" />
+                                <not>
+                                    <equals arg1 = "${additional.jar.classpath}" arg2 = "" trim = "true" />
+                                </not>
+                            </and>
+                        </condition>
+                    </then>
+                    <else>
+                        <condition property = "jar.classpath" value = "${basic.jar.classpath} ${additional.jar.classpath}" else = "${basic.jar.classpath}">
+                            <and>
+                                <isset property = "additional.jar.classpath" />
+                                <not>
+                                    <equals arg1 = "${additional.jar.classpath}" arg2 = "" trim = "true" />
+                                </not>
+                            </and>
+                        </condition>
+                    </else>
+                </if>
+                
+                <property name = "manifest.dir" value = "${bin.dir}/META-INF" />
+                <mkdirPreserve dir = "${manifest.dir}" />
+                <property name = "manifest.file" value = "${manifest.dir}/MANIFEST.MF" />
+                <manifest file = "${manifest.file}" />
+                
+                <if>
+                    <and>
+                        <isset property = "jar.main.class" />
+                        <not>
+                            <equals arg1 = "${jar.main.class}" arg2 = "" trim = "true" />
+                        </not>
+                    </and>
+                    <then>
+                        <manifest file = "${manifest.file}" mode = "update">
+                            <attribute name = "Main-Class" value = "${jar.main.class}" />
+                        </manifest>
+                    </then>
+                </if>
+                <if>
+                    <not>
+                        <equals arg1 = "${jar.classpath}" arg2 = "" trim = "true" />
+                    </not>
+                    <then>
+                        <manifest file="${manifest.file}" mode = "update">
+                            <attribute name = "Class-Path" value = "${jar.classpath}" />
+                        </manifest>
+                    </then>
+                </if>
+                
+                <jar jarfile = "${jar.file}"
+                     basedir = "${bin.dir}"
+                     includes = "**/*.class"
+                     manifest = "${manifest.file}" />
+                     
+                <if>
+                    <and>
+                        <isset property = "is.root.build" />
+                        <equals arg1 = "${is.root.build}" arg2 = "false" />
+                        <isset property = "dependency.project" />
+                        <equals arg1 = "${dependency.project}" arg2 = "true" />
+                    </and>
+                    <then>
+                        <copy toDir = "${cache.dir}">
+                            <fileset dir = "." includes = "**/${jar.file}" />
+                        </copy>
+                    </then>
+                </if>
+            </then>
+        </if>
+    </target>
+    
+    <target name = "Export" depends = "Build" />
+    
+    <target name = "JavadocClear">
+        <delete dir = "${project.doc.dir}" />
+    </target>
+    
+    <target name = "JavadocInit" depends = "JavadocClear">
+        <mkdirPreserve dir = "${project.doc.dir}" />
+    </target>
+    
+    <target name = "Javadoc" depends = "JavadocInit">
+        <property name = "tmp.loc" location = "${doc.dir}/tmp" />
+        <property name = "tmp2.loc" location = "${doc.dir}/JBot" />
+        <property name = "tmp3.loc" location = "${doc.dir}/Common" />
+        <javadoc sourcepath = "${src.dir}" destdir = "${project.doc.dir}">
+            <classpath refid = "classpath" />
+            <link href = "https://docs.oracle.com/javase/7/docs/api/" />
+        </javadoc>
+    </target>
+</project>

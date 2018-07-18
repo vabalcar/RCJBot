@@ -1,0 +1,22 @@
+<?xml version = "1.0" ?>
+<project>
+    <if>
+        <and>
+            <isset property = "lejos.project" />
+            <equals arg1 = "${lejos.project}" arg2 = "true" trim = "true" />
+        </and>
+        <then>
+            <jdtClassPathLibrary name = "org.lejos.ev3.ldt.LEJOS_EV3_LIBRARY_CONTAINER">
+                <fileset dir = "${env.EV3_HOME}/lib" />
+            </jdtClassPathLibrary>
+            <pathconvert property = "additional.jar.classpath" targetos = "unix" pathsep = " ">
+                <resources>
+                    <string value = "/home/root/lejos/lib/ev3classes.jar" />
+                    <string value = "/home/root/lejos/lib/opencv-2411.jar" />
+                    <string value = "/home/root/lejos/lib/dbusjava.jar" />
+                    <string value = "/home/root/lejos/libjna/usr/share/java/jna.jar" />
+                </resources>
+            </pathconvert>
+        </then>
+    </if>
+</project>

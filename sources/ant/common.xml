@@ -1,0 +1,24 @@
+<?xml version = "1.0" ?>
+<project>
+    <property environment = "env" />
+    
+    <condition property = "user.dir.shift" value = ".">
+        <not>
+            <isset property = "user.dir.shift" />
+        </not>
+    </condition>
+    
+    <condition property = "ant.resources.dir" value = ".">
+        <not>
+            <isset property = "ant.resources.dir" />
+        </not>
+    </condition>
+    
+    <import file = "libImport.xml" />
+    <import file = "macros.xml" />
+    
+    <import file = "lejosDependencies.xml" />
+    <import file = "eclipseParsing.xml" />
+    
+    <import file = "targets.xml" />
+</project>

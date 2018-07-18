@@ -1,0 +1,18 @@
+<?xml version = "1.0" ?>
+<project name = "lejos" default = "Export">
+    <property file = "build.properties" />
+    
+    <import file = "${ant.resources.dir}/export.xml" />
+    
+    <target name = "Invoke">
+        <runAnt dir = "Common" />
+        <runAnt dir = "JBot" />
+        <runAnt dir = "EV3JBot" />
+        <runAnt dir = "RCEV3JBot" />
+    </target>
+    
+    <target name = "Clear" depends = "Invoke" />
+    <target name = "Build" depends = "Invoke" />
+    <target name = "Javadoc" depends = "Invoke" />
+    <target name = "JavadocClear" depends = "Invoke" />
+</project>

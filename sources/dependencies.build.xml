@@ -1,0 +1,28 @@
+<?xml version = "1.0" ?>
+<project name = "dependencies" default = "Invoke">
+    <property file = "build.properties" />
+    
+    <import file = "${ant.resources.dir}/libImport.xml" />
+    
+    <target name = "MoveCachedDependencies">
+        <if>
+            <and>
+                <available file = "${cache.dir}" type = "dir" />
+                <available file = "${build.dir}" type = "dir" />
+            </and>
+            <then>
+                <move toDir = ".">
+                    <fileset dir = "${cache.dir}" includes = "**/*" />
+                </move>
+            </then>
+        </if>
+        <delete dir = "${cache.dir}" />
+    </target>
+    
+    <target name = "Invoke" depends = "MoveCachedDependencies" />
+    <target name = "Clear" />
+    <target name = "Build" depends = "Invoke" />
+    <target name = "Export" depends = "Invoke" />
+    <target name = "Javadoc" />
+    <target name = "JavadocClear" />
+</project>

@@ -1,0 +1,27 @@
+<?xml version = "1.0" ?>
+<project default = "Export">
+    <property file = "build.properties" />
+    
+    <import file = "${ant.resources.dir}/libImport.xml" />
+    <import file = "${ant.resources.dir}/macros.xml" />
+    
+    <target name = "Invoke">
+        <runAnt antfile = "lejos.build.xml" />
+        <runAnt antfile = "pc.build.xml" />
+        <runAnt antfile = "dependencies.build.xml" />
+    </target>
+    
+    <target name = "Clear" depends = "Invoke">
+        <property name = "build.dir.location" location = "${build.dir}" />
+        <echo>Deleting unneeded content of ${build.dir.location}</echo>
+        <delete includeemptydirs = "true">
+            <fileset dir = "${build.dir}" includes = "**/*" excludes  = ".project" />
+        </delete>
+        <delete dir = "${doc.dir}" />
+    </target>
+    
+    <target name = "Build" depends = "Invoke" />
+    <target name = "Export" depends = "Invoke" />
+    <target name = "Javadoc" depends = "Invoke" />
+    <target name = "JavadocClear" depends = "Invoke" />
+</project>
