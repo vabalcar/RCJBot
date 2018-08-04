@@ -2,8 +2,9 @@
 <project>
     <echo>Parsing Eclipse project "${ant.project.name}"...</echo>
 
-    <installedJREs default = "defaultJRE">
-        <jre id="defaultJRE" location="${java.home}" />
+    <installedJREs default = "JRE_1_7">
+        <!-- <jre id="defaultJRE" location="${java.home}" /> -->
+		<jre id = "JRE" location = "${eclipse.jre}" />
     </installedJREs>
 
     <getJdtClassPath workspaceDirectory = "${basedir}"
