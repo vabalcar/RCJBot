@@ -14,45 +14,34 @@ import cz.vabalcar.jbot.events.DataProviderInfo;
 import cz.vabalcar.jbot.JBotImpl;
 import cz.vabalcar.jbot.moving.MovementProcessor;
 import cz.vabalcar.util.FloatArray;
+
 import lejos.hardware.ev3.EV3;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.sensor.BaseSensor;
 
-/**
- * The Class EV3JBot.
- */
 public class EV3JBot extends JBotImpl<FloatArray> {
     
-    /** The waiting interrupted. */
-    private boolean waitingInterrupted = false;
-    
-    /** The key reading period ms. */
-    private long KEY_READING_PERIOD_MS = 50;
-    
-    /** The ev 3. */
-    private EV3 ev3 = LocalEV3.get();
+	private final DataProviderInfo<FloatArray> info = new DataProviderInfo<FloatArray>() {
+		
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public String getName() {
+			return ev3.getName();
+		}
+	};
 	
+	private final long KEY_READING_PERIOD_MS = 50;
+	private final EV3 ev3 = LocalEV3.get();
     
-    /**
-     * {@link }.
-     *
-     * @param wheelsConfigurations the wheels configurations
-     * @param otherMotorsConfigurations the other motors configurations
-     * @param sensorsConfigurations the sensors configurations
-     */
-	public EV3JBot(List<WheelConfiguration> wheelsConfigurations, 
+	private boolean waitingInterrupted = false;
+    	
+    public EV3JBot(List<WheelConfiguration> wheelsConfigurations, 
 	        List<MotorConfigration> otherMotorsConfigurations, 
 	        List<SensorConfiguration> sensorsConfigurations) {
 		super(FloatArray.class, initializeMovementProcessor(wheelsConfigurations, otherMotorsConfigurations), initializeSensors(sensorsConfigurations));
 	}
 	
-	/**
-	 * Initialize movement processor.
-	 *
-	 * @param wheelsConfigurations the wheels configurations
-	 * @param otherMotorsConfigurations the other motors configurations
-	 * @return the movement processor
-	 */
 	private static MovementProcessor initializeMovementProcessor(List<WheelConfiguration> wheelsConfigurations,
 	        List<MotorConfigration> otherMotorsConfigurations) {
 	    if (wheelsConfigurations == null || wheelsConfigurations.size() == 0) {
@@ -76,12 +65,6 @@ public class EV3JBot extends JBotImpl<FloatArray> {
 	    }
 	}
 	
-	/**
-	 * Initialize sensors.
-	 *
-	 * @param sensorsConfigurations the sensors configurations
-	 * @return the EV 3 sensor[]
-	 */
 	private static EV3Sensor[] initializeSensors(List<SensorConfiguration> sensorsConfigurations) {
 	    if (sensorsConfigurations == null) {
 	        sensorsConfigurations = new ArrayList<>();
@@ -94,30 +77,15 @@ public class EV3JBot extends JBotImpl<FloatArray> {
 		return sensors;
 	}
 	
-	/**
-	 * From file.
-	 *
-	 * @param file the file
-	 * @return the EV 3 Jbot
-	 * @throws FileNotFoundException the file not found exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws FormatException the format exception
-	 */
 	public static EV3JBot fromFile(String file) throws FileNotFoundException, IOException, FormatException {
 	    return new EV3JBotParser().parse(new FileReader(file));
 	}
 
-    /* (non-Javadoc)
-     * @see cz.vabalcar.jbot.events.DataProvider#getInfo()
-     */
     @Override
     public DataProviderInfo<FloatArray> getInfo() {
-        return null;
+        return info;
     }
     
-    /**
-     * Wait for any key press.
-     */
     public void waitForAnyKeyPress() {
         waitingInterrupted = false;
         int keyState = ev3.getKeys().readButtons();
@@ -133,9 +101,6 @@ public class EV3JBot extends JBotImpl<FloatArray> {
         }
     }
     
-    /**
-     * Interrupt waiting for key press.
-     */
     public void interruptWaitingForKeyPress() {
         waitingInterrupted = true;
     }

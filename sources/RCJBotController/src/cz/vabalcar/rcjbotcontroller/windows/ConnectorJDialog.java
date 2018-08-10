@@ -19,9 +19,6 @@ import java.beans.PropertyChangeListener;
 import java.util.concurrent.ExecutionException;
 import java.awt.event.ActionEvent;
 
-import lejos.hardware.BrickFinder;
-import lejos.hardware.BrickInfo;
-
 /**
  * This class provides dialog which can be used by user to connect to a JBot. If connection is successful, 
  * connection details are stored in configuration and the dialog will be filled with them when dialog will
@@ -96,18 +93,13 @@ public class ConnectorJDialog extends JDialog {
                                 parent.getJBot().close();
                             }
                             
-                            BrickInfo[] bricks = BrickFinder.find(jBotName);
-                            
-                            if (bricks.length == 0) {
-                                return false;
+                            if (parent.getJBot().connectTo(jBotName, jBotConfiguration.getPortNumber())) {
+                            	jBotConfiguration.setName(jBotName);
+                                jBotConfiguration.setPort(jBotPort);
+                                return true;
                             }
                             
-                            jBotConfiguration.setName(jBotName);
-                            jBotConfiguration.setPort(jBotPort);
-                            
-                            System.out.println(bricks[0].getIPAddress() + " found");
-                            
-                            return parent.getJBot().connectTo(bricks[0].getIPAddress(), jBotConfiguration.getPortNumber());
+                            return false;
                         } catch (Exception e) {
                             return false;
                         }

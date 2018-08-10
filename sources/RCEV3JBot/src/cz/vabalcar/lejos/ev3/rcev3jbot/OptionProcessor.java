@@ -15,7 +15,7 @@ public class OptionProcessor {
     private String robotConfigurationFile = "robot.conf";
     
     /** The port file. */
-    private String portFile = "port.conf";
+    private String portConfigurationFile = "port.conf";
 
     /**
      * Gets the robot configuration file.
@@ -31,8 +31,8 @@ public class OptionProcessor {
      *
      * @return the port file
      */
-    public String getPortFile() {
-        return portFile;
+    public String getPortConfigurationFile() {
+        return portConfigurationFile;
     }
     
     /**
@@ -51,7 +51,7 @@ public class OptionProcessor {
                 robotConfigurationFile = args[i + 1];
                 break;
             case PORT_CONF_OPTION:
-                portFile = args[i + 1];
+                portConfigurationFile = args[i + 1];
                 break;
             default:
                 return false;

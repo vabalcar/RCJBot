@@ -67,35 +67,35 @@ public class VisualizingSensorDataListener extends SimpleDataListener<FloatArray
      */
     private Color getColor(int lejosColorId) {
         switch (lejosColorId) {
-        case lejos.robotics.Color.BLACK:
+        case LejosColor.BLACK:
             return Color.BLACK;
-        case lejos.robotics.Color.BLUE:
+        case LejosColor.BLUE:
             return Color.BLUE;
-        case lejos.robotics.Color.BROWN:
+        case LejosColor.BROWN:
             return BROWN;
-        case lejos.robotics.Color.CYAN:
+        case LejosColor.CYAN:
             return Color.CYAN;
-        case lejos.robotics.Color.DARK_GRAY:
+        case LejosColor.DARK_GRAY:
             return Color.DARK_GRAY;
-        case lejos.robotics.Color.GRAY:
+        case LejosColor.GRAY:
             return Color.GRAY;
-        case lejos.robotics.Color.GREEN:
+        case LejosColor.GREEN:
             return Color.GREEN;
-        case lejos.robotics.Color.LIGHT_GRAY:
+        case LejosColor.LIGHT_GRAY:
             return Color.LIGHT_GRAY;
-        case lejos.robotics.Color.MAGENTA:
+        case LejosColor.MAGENTA:
             return Color.MAGENTA;
-        case lejos.robotics.Color.NONE:
+        case LejosColor.NONE:
             return Color.BLACK;
-        case lejos.robotics.Color.ORANGE:
+        case LejosColor.ORANGE:
             return Color.ORANGE;
-        case lejos.robotics.Color.PINK:
+        case LejosColor.PINK:
             return Color.PINK;
-        case lejos.robotics.Color.RED:
+        case LejosColor.RED:
             return Color.RED;
-        case lejos.robotics.Color.WHITE:
+        case LejosColor.WHITE:
             return Color.WHITE;
-        case lejos.robotics.Color.YELLOW:
+        case LejosColor.YELLOW:
             return Color.YELLOW;
         default:
             return Color.BLACK;

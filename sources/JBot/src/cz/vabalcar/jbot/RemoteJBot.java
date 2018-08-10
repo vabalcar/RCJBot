@@ -9,7 +9,8 @@ import cz.vabalcar.jbot.events.DataProviderImpl;
 import cz.vabalcar.jbot.events.DataProviderInfo;
 import cz.vabalcar.jbot.moving.MovementProcessor;
 import cz.vabalcar.jbot.moving.RemoteMovementProcessor;
-import cz.vabalcar.jbot.networking.PointToPointNetworkConnection;
+import cz.vabalcar.jbot.networking.PTPConnection;
+import cz.vabalcar.jbot.networking.Role;
 import cz.vabalcar.jbot.sensors.RemoteSensor;
 import cz.vabalcar.jbot.sensors.Sensor;
 import cz.vabalcar.jbot.sensors.SensorDataEvent;
@@ -26,7 +27,7 @@ public class RemoteJBot<T extends Serializable> extends DataProviderImpl<T> impl
     private DeserializingThread deserializer = new DeserializingThread();
     
     /** The connection. */
-    private PointToPointNetworkConnection connection;
+    private PTPConnection connection;
     
     /** The movement processor. */
     private RemoteMovementProcessor movementProcessor;
@@ -49,8 +50,8 @@ public class RemoteJBot<T extends Serializable> extends DataProviderImpl<T> impl
      * @throws IOException Signals that an I/O exception has occurred.
      */
     public boolean connectTo(String jbotName, int port) throws IOException {
-        this.connection = new PointToPointNetworkConnection(port);
-        if (connection.connectTo(jbotName)) {
+        this.connection = new PTPConnection(Role.CLIENT, port, port, jbotName);
+        if (connection.connect()) {
             movementProcessor = new RemoteMovementProcessor(connection.getOutputStream());
             
             if (deserializer.getState() != Thread.State.NEW) {
