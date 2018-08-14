@@ -8,7 +8,7 @@ import javax.swing.KeyStroke;
 
 import cz.vabalcar.jbot.RemoteJBot;
 import cz.vabalcar.jbot.moving.Direction;
-import cz.vabalcar.jbot.moving.LinearTranslation;
+import cz.vabalcar.jbot.moving.Locomotion;
 import cz.vabalcar.jbot.moving.MotorMovement;
 import cz.vabalcar.jbot.moving.Movement;
 import cz.vabalcar.jbot.moving.Rotation;
@@ -111,22 +111,22 @@ public class KeyActionsManager {
      */
     public KeyActionsManager(JComponent eventSource, RemoteJBot<FloatArray> movementTarget) {
         register = new RobotMovementActionRegister(eventSource, movementTarget);
-        register(KEY_FORWARD, KEY_FORWARD_DEFAULT, new LinearTranslation(Direction.FORWARD));
-        register(KEY_BACKWARD, KEY_BACKWARD_DEFAULT, new LinearTranslation(Direction.BACKWARD));
+        register(KEY_FORWARD, KEY_FORWARD_DEFAULT, new Locomotion(Direction.FORWARD));
+        register(KEY_BACKWARD, KEY_BACKWARD_DEFAULT, new Locomotion(Direction.BACKWARD));
         register(KEY_LEFT, KEY_LEFT_DEFAULT, new Rotation(Direction.LEFT));
         register(KEY_RIGHT, KEY_RIGHT_DEFAULT, new Rotation(Direction.RIGHT));
         
-        register(KEY_M1_FORWARD, KEY_M1_FORWARD_DEFAULT, 1, new LinearTranslation(Direction.FORWARD));
-        register(KEY_M1_BACKWARD, KEY_M1_BACKWARD_DEFAULT, 1, new LinearTranslation(Direction.BACKWARD));
+        register(KEY_M1_FORWARD, KEY_M1_FORWARD_DEFAULT, 1, new Locomotion(Direction.FORWARD));
+        register(KEY_M1_BACKWARD, KEY_M1_BACKWARD_DEFAULT, 1, new Locomotion(Direction.BACKWARD));
         
-        register(KEY_M2_FORWARD, KEY_M2_FORWARD_DEFAULT, 2, new LinearTranslation(Direction.FORWARD));
-        register(KEY_M2_BACKWARD, KEY_M2_BACKWARD_DEFAULT, 2, new LinearTranslation(Direction.BACKWARD));
+        register(KEY_M2_FORWARD, KEY_M2_FORWARD_DEFAULT, 2, new Locomotion(Direction.FORWARD));
+        register(KEY_M2_BACKWARD, KEY_M2_BACKWARD_DEFAULT, 2, new Locomotion(Direction.BACKWARD));
         
-        register(KEY_M3_FORWARD, KEY_M3_FORWARD_DEFAULT, 3, new LinearTranslation(Direction.FORWARD));
-        register(KEY_M3_BACKWARD, KEY_M3_BACKWARD_DEFAULT, 3, new LinearTranslation(Direction.BACKWARD));
+        register(KEY_M3_FORWARD, KEY_M3_FORWARD_DEFAULT, 3, new Locomotion(Direction.FORWARD));
+        register(KEY_M3_BACKWARD, KEY_M3_BACKWARD_DEFAULT, 3, new Locomotion(Direction.BACKWARD));
         
-        register(KEY_M4_FORWARD, KEY_M4_FORWARD_DEFAULT, 4, new LinearTranslation(Direction.FORWARD));
-        register(KEY_M4_BACKWARD, KEY_M4_BACKWARD_DEFAULT, 4, new LinearTranslation(Direction.BACKWARD));
+        register(KEY_M4_FORWARD, KEY_M4_FORWARD_DEFAULT, 4, new Locomotion(Direction.FORWARD));
+        register(KEY_M4_BACKWARD, KEY_M4_BACKWARD_DEFAULT, 4, new Locomotion(Direction.BACKWARD));
     }
     
     /**

@@ -4,44 +4,30 @@ import java.io.Serializable;
 
 import cz.vabalcar.jbot.events.DataEvent;
 
-/**
- * The Class RemoteSensor.
- *
- * @param <T> the generic type
- */
-public class RemoteSensor<T extends Serializable> extends NonInitializingSensorImpl<T> {
-    
-    /** The last received data. */
+public class RemoteSensor<T extends Serializable> extends SensorImpl<T> {
     private T lastReceivedData = null;
     
-    /**
-     * Instantiates a new remote sensor.
-     *
-     * @param sensor the sensor
-     * @param sensorDataType the sensor data type
-     */
-    public RemoteSensor(String sensor, Class<T> sensorDataType) {
-        super(sensor, sensorDataType);
+    public RemoteSensor(String name, Class<T> sensorDataType) {
+        super(name, sensorDataType, 0);
     }
     
-    /* (non-Javadoc)
-     * @see cz.vabalcar.jbot.events.DataProviderImpl#raiseDataEvent(cz.vabalcar.jbot.events.DataEvent)
-     */
+    @Override
+	public void initialize() {
+		// TODO Auto-generated method stub
+	}
+
+    @Override
+    public T readData() {
+        return lastReceivedData;
+    }
+    
     @Override
     public boolean raiseDataEvent(DataEvent<? extends T> event) {
-        if (event.getSourceInfo().equals(getInfo())) {
+        if (event.getSourceName().equals(getName())) {
             lastReceivedData = event.getData();
             return super.raiseDataEvent(event);
         } else {
             return false;
         }
-    }
-
-    /* (non-Javadoc)
-     * @see cz.vabalcar.jbot.sensors.Sensor#readData()
-     */
-    @Override
-    public T readData() {
-        return lastReceivedData;
     }
 }

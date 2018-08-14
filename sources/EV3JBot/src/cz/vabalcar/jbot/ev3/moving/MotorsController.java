@@ -2,7 +2,7 @@ package cz.vabalcar.jbot.ev3.moving;
 
 import cz.vabalcar.jbot.moving.MotorMovement;
 import cz.vabalcar.jbot.moving.Movement;
-import cz.vabalcar.jbot.moving.UnsupportedMovementProcessorActionException;
+import cz.vabalcar.jbot.moving.UnsupportedMovementException;
 import cz.vabalcar.jbot.ev3.MotorConfigration;
 import cz.vabalcar.jbot.ev3.MotorFactory;
 import lejos.hardware.motor.BaseRegulatedMotor;
@@ -36,7 +36,7 @@ public class MotorsController {
      * @param motorMovement the motor movement
      * @throws UnsupportedMovementProcessorActionException the unsupported movement processor action exception
      */
-    public void process(MotorMovement motorMovement) throws UnsupportedMovementProcessorActionException {
+    public void process(MotorMovement motorMovement) throws UnsupportedMovementException {
         process(motorMovement.getTarget(), motorMovement.getDescription());
     }
     
@@ -48,10 +48,10 @@ public class MotorsController {
      * @param action the action
      * @throws UnsupportedMovementProcessorActionException the unsupported movement processor action exception
      */
-    public <M extends Movement> void process(int target, M action) throws UnsupportedMovementProcessorActionException {
+    public <M extends Movement> void process(int target, M action) throws UnsupportedMovementException {
         int motorIndex = target - 1;
         if (motorIndex < motors.size()) {
-            motors.get(motorIndex).process(action);
+            motors.get(motorIndex).visit(action);
         }
     }
 }

@@ -1,23 +1,19 @@
 package cz.vabalcar.jbot.moving;
 
-public class Rotation implements Travel {
+public class Locomotion implements Travel {
     
     private static final long serialVersionUID = 1L;
-	private Direction direction;
+	private final Direction direction;
 	
-	public Rotation(Direction direction) {
+	public Locomotion(Direction direction) {
 		if (!isValid(direction)) {
 			throw new IllegalArgumentException();
 		}
 		this.direction = direction;
 	}
 	
-	public boolean isClockwise() {
-		return direction == Direction.LEFT;
-	}
-	
 	private boolean isValid(Direction direction) {
-		return direction == Direction.LEFT || direction == Direction.RIGHT;
+		return direction == Direction.FORWARD || direction == Direction.BACKWARD;
 	}
 	
 	@Override
@@ -33,7 +29,7 @@ public class Rotation implements Travel {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(direction).append(" rotation");
+		sb.append("locomotion ").append(direction);
 		return sb.toString();
 	}
 }

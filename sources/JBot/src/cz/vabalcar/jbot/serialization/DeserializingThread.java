@@ -64,7 +64,7 @@ public class DeserializingThread extends Thread implements AutoCloseable {
 	 * @param provider the provider
 	 */
 	public <E, D extends Serializable> void registerDataProvider(Class<E> targetType, DataProvider<D> provider) {
-	    addStreamListener(targetType, new DataEventRaiser<>(provider.getProvidedDataType(), provider));
+	    addStreamListener(targetType, new DataEventRaiser<>(provider));
 	}
 	
 	/**

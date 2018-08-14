@@ -2,15 +2,15 @@ package cz.vabalcar.rcjbotcontroller;
 
 import java.awt.Color;
 
-import cz.vabalcar.jbot.events.DataProviderInfo;
-import cz.vabalcar.jbot.events.SimpleDataListener;
+import cz.vabalcar.jbot.events.DataEvent;
+import cz.vabalcar.jbot.events.DataListenerImpl;
 import cz.vabalcar.util.FloatArray;
 
 /**
  * This class is pusher of read data from a DataProvider and if the data are read from 
  * EV3IRSensor, EV3TouchSensor or EV3ColorSensor, the data gets visualized by a SensorDataVisualizer.
  */
-public class VisualizingSensorDataListener extends SimpleDataListener<FloatArray> {
+public class VisualizingSensorDataListener extends DataListenerImpl<FloatArray> {
     
     /** brown color */
     private static final Color BROWN = new Color(139, 69, 19);
@@ -33,25 +33,18 @@ public class VisualizingSensorDataListener extends SimpleDataListener<FloatArray
         this.visualizer.toNotDataReceivedState();        
     }
 
-    /*
-     * @see cz.vabalcar.jbot.events.SimpleDataListener#dataReceived(cz.vabalcar.jbot.events.DataProviderInfo, U)
-     */
-    /**
-     * Processes received data from a DataProvider and if the data are read from 
-     * EV3IRSensor, EV3TouchSensor or EV3ColorSensor, the data gets visualized by 
-     * the SensorDataVisualizer immediately.
-     */
     @Override
-    public <U extends FloatArray> boolean dataReceived(DataProviderInfo<? extends FloatArray> source, U data) {
-        switch (source.getName()) {
+    public boolean processDataEvent(DataEvent<? extends FloatArray> event) {
+    	float[] data = event.getData().getArray();
+        switch (event.getSourceName()) {
         case "EV3IRSensor":
-            visualizer.setProximity(1f - data.getArray()[0] / EV3_IR_SENSOR_MAX_VALUE);
+            visualizer.setProximity(1f - data[0] / EV3_IR_SENSOR_MAX_VALUE);
             break;
         case "EV3TouchSensor":
-            visualizer.setCrashed(data.getArray()[0] == 1f);
+            visualizer.setCrashed(data[0] == 1f);
             break;
         case "EV3ColorSensor":
-            visualizer.setSurfaceColor(getColor((int)data.getArray()[0]));
+            visualizer.setSurfaceColor(getColor((int)data[0]));
             break;
         default:
             break;
@@ -101,5 +94,10 @@ public class VisualizingSensorDataListener extends SimpleDataListener<FloatArray
             return Color.BLACK;
         }
     }
+
+	@Override
+	public void close() {
+		// Nothing to do here.
+	}
 
 }

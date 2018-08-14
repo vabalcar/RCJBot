@@ -8,10 +8,9 @@ import java.util.concurrent.Callable;
 
 import cz.vabalcar.jbot.events.DataEvent;
 import cz.vabalcar.jbot.events.DataListener;
-import cz.vabalcar.jbot.events.DataProviderInfo;
 import cz.vabalcar.jbot.moving.MovementDataEvent;
-import cz.vabalcar.jbot.moving.MovementProcessor;
-import cz.vabalcar.jbot.moving.MovementProcessorActionListener;
+import cz.vabalcar.jbot.moving.MovementVisitor;
+import cz.vabalcar.jbot.moving.MovementListener;
 import cz.vabalcar.jbot.networking.PTPConnection;
 import cz.vabalcar.jbot.networking.Role;
 import cz.vabalcar.jbot.sensors.Sensor;
@@ -36,7 +35,7 @@ public class RCJBot<T extends Serializable> implements JBot<T> {
     }
     
     public void waitForConnection(int port) {
-    	connection = new PTPConnection(Role.SERVER, port, port, getInfo().getName());
+    	connection = new PTPConnection(Role.SERVER, port, port, getName());
         if (connection.connect()) {
         	try {
         		enableStreaming(connection.getInputStream(), connection.getOutputStream());
@@ -51,7 +50,7 @@ public class RCJBot<T extends Serializable> implements JBot<T> {
             deserializer = new DeserializingThread();
         }
         deserializer.setInputStream(inputStream);
-        deserializer.addStreamListener(MovementDataEvent.class, new MovementProcessorActionListener(innerJBot.getMovementProcessor()));
+        deserializer.addStreamListener(MovementDataEvent.class, new MovementListener(innerJBot.getMovementProcessor()));
         deserializer.start();
         serializer = new SerializingDataListener<>(getProvidedDataType(), outputStream);
         addListener(serializer);
@@ -73,8 +72,8 @@ public class RCJBot<T extends Serializable> implements JBot<T> {
     }
     
     @Override
-    public DataProviderInfo<T> getInfo() {
-        return innerJBot.getInfo();
+    public String getName() {
+        return innerJBot.getName();
     }
 
     @Override
@@ -93,7 +92,7 @@ public class RCJBot<T extends Serializable> implements JBot<T> {
     }
 
     @Override
-    public MovementProcessor getMovementProcessor() {
+    public MovementVisitor getMovementProcessor() {
         return innerJBot.getMovementProcessor();
     }
     

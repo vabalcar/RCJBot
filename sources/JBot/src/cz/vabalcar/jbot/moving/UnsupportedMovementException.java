@@ -3,7 +3,7 @@ package cz.vabalcar.jbot.moving;
 /**
  * The Class UnsupportedMovementProcessorActionException.
  */
-public class UnsupportedMovementProcessorActionException extends Exception {
+public class UnsupportedMovementException extends Exception {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -13,7 +13,7 @@ public class UnsupportedMovementProcessorActionException extends Exception {
      *
      * @param action the action
      */
-    public UnsupportedMovementProcessorActionException(MovementProcessorAction action) {
+    public UnsupportedMovementException(Movement action) {
         super(action + " is not supported");
     }
 }

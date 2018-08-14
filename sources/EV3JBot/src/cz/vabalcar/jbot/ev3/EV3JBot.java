@@ -10,9 +10,8 @@ import cz.vabalcar.jbot.ev3.moving.EV3MovementProcessor;
 import cz.vabalcar.jbot.ev3.parsing.EV3JBotParser;
 import cz.vabalcar.jbot.ev3.parsing.FormatException;
 import cz.vabalcar.jbot.ev3.sensors.EV3Sensor;
-import cz.vabalcar.jbot.events.DataProviderInfo;
+import cz.vabalcar.jbot.moving.MovementVisitor;
 import cz.vabalcar.jbot.JBotImpl;
-import cz.vabalcar.jbot.moving.MovementProcessor;
 import cz.vabalcar.util.FloatArray;
 
 import lejos.hardware.ev3.EV3;
@@ -20,16 +19,6 @@ import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.sensor.BaseSensor;
 
 public class EV3JBot extends JBotImpl<FloatArray> {
-    
-	private final DataProviderInfo<FloatArray> info = new DataProviderInfo<FloatArray>() {
-		
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public String getName() {
-			return ev3.getName();
-		}
-	};
 	
 	private final long KEY_READING_PERIOD_MS = 50;
 	private final EV3 ev3 = LocalEV3.get();
@@ -42,7 +31,7 @@ public class EV3JBot extends JBotImpl<FloatArray> {
 		super(FloatArray.class, initializeMovementProcessor(wheelsConfigurations, otherMotorsConfigurations), initializeSensors(sensorsConfigurations));
 	}
 	
-	private static MovementProcessor initializeMovementProcessor(List<WheelConfiguration> wheelsConfigurations,
+	private static MovementVisitor initializeMovementProcessor(List<WheelConfiguration> wheelsConfigurations,
 	        List<MotorConfigration> otherMotorsConfigurations) {
 	    if (wheelsConfigurations == null || wheelsConfigurations.size() == 0) {
 	        return null;
@@ -80,11 +69,11 @@ public class EV3JBot extends JBotImpl<FloatArray> {
 	public static EV3JBot fromFile(String file) throws FileNotFoundException, IOException, FormatException {
 	    return new EV3JBotParser().parse(new FileReader(file));
 	}
-
-    @Override
-    public DataProviderInfo<FloatArray> getInfo() {
-        return info;
-    }
+	
+	@Override
+	public String getName() {
+		return ev3.getName();
+	}
     
     public void waitForAnyKeyPress() {
         waitingInterrupted = false;

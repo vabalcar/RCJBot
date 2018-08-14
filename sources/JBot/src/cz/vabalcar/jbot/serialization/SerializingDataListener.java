@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 
 import cz.vabalcar.jbot.events.DataEvent;
-import cz.vabalcar.jbot.events.UnknownDataEventRecogniser;
+import cz.vabalcar.jbot.events.DataListenerImpl;
 
 /**
  * The listener interface for receiving serializingData events.
@@ -19,27 +19,16 @@ import cz.vabalcar.jbot.events.UnknownDataEventRecogniser;
  *
  * @param <T> the generic type
  */
-public class SerializingDataListener<T extends Serializable> extends UnknownDataEventRecogniser<T> {
+public class SerializingDataListener<T extends Serializable> extends DataListenerImpl<T> {
     
-    /** The output stream. */
     private final ObjectOutputStream outputStream;
     
-    /**
-     * Instantiates a new serializing data listener.
-     *
-     * @param knownType the known type
-     * @param outputStream the output stream
-     * @throws IOException Signals that an I/O exception has occurred.
-     */
     public SerializingDataListener(Class<T> knownType, OutputStream outputStream) throws IOException {
         super(knownType);
         this.outputStream = new ObjectOutputStream(outputStream);
         this.outputStream.flush();
     }
 
-    /* (non-Javadoc)
-     * @see cz.vabalcar.jbot.events.DataListener#processDataEvent(cz.vabalcar.jbot.events.DataEvent)
-     */
     @Override
     public boolean processDataEvent(DataEvent<? extends T> event) {
         try {
@@ -52,11 +41,8 @@ public class SerializingDataListener<T extends Serializable> extends UnknownData
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.AutoCloseable#close()
-     */
     @Override
-    public void close() throws Exception {
+    public void close() throws IOException {
         outputStream.close();
     }
 

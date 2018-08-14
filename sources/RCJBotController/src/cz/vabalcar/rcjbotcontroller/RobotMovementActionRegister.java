@@ -8,7 +8,7 @@ import javax.swing.JComponent;
 import cz.vabalcar.jbot.RemoteJBot;
 import cz.vabalcar.jbot.moving.Movement;
 import cz.vabalcar.jbot.moving.Stop;
-import cz.vabalcar.jbot.moving.UnsupportedMovementProcessorActionException;
+import cz.vabalcar.jbot.moving.UnsupportedMovementException;
 import cz.vabalcar.util.FloatArray;
 
 /**
@@ -51,9 +51,9 @@ public class RobotMovementActionRegister {
         public void actionPerformed(ActionEvent event) {
             try {
                 if (remoteJBot.isConnected()) {
-                    remoteJBot.getMovementProcessor().process(movement);
+                    remoteJBot.getMovementProcessor().visit(movement);
                 }
-            } catch (UnsupportedMovementProcessorActionException e) {
+            } catch (UnsupportedMovementException e) {
                 e.printStackTrace();
             }
             System.out.println(movement + " sent");

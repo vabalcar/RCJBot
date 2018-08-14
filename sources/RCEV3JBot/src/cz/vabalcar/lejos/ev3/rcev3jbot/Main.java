@@ -3,7 +3,7 @@ package cz.vabalcar.lejos.ev3.rcev3jbot;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
@@ -20,7 +20,7 @@ public class Main {
     private static EV3JBot ev3JBot;
     private static boolean programTerminatedByUser = false;
     private static Semaphore semaphore = new Semaphore(0);
-    private static Executor executor = Executors.newSingleThreadExecutor();
+    private static ExecutorService executor = Executors.newSingleThreadExecutor();
     
     public static void main(String[] args) {
         System.out.println("running");
@@ -129,6 +129,7 @@ public class Main {
 				e.printStackTrace();
 			}
     	}
+    	executor.shutdownNow();
         LED.turnOff();
     }
 }

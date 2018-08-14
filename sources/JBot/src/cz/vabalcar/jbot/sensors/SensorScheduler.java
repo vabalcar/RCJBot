@@ -1,65 +1,38 @@
 package cz.vabalcar.jbot.sensors;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-/**
- * The Class SensorScheduler.
- */
 public class SensorScheduler implements AutoCloseable {
 	
-	/** The thread pool. */
-	private ScheduledExecutorService threadPool = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
+	private final ScheduledExecutorService threadPool = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
+	private final Queue<Sensor<?>> sensors = new LinkedList<>();
 	
-	/** The sensor readings. */
-	private List<SensorReading> sensorReadings = new ArrayList<>();
+	private boolean running = false;
 	
-	/**
-	 * Adds the sensor.
-	 *
-	 * @param sensor the sensor
-	 */
-	public void addSensor(Sensor<?> sensor) {
-		sensorReadings.add(new SensorReading(sensor));
-	}
-	
-	/**
-	 * Removes the sensor reading.
-	 *
-	 * @param sensor the sensor
-	 */
-	public void removeSensorReading(SensorImpl<?> sensor) {
-		for(int i = 0; i < sensorReadings.size(); i++) {
-			if (sensorReadings.get(i).isProcessedOnSensor(sensor)) {
-				sensorReadings.remove(i);
-				break;
-			}
+	public void add(Sensor<?> sensor) {
+		if (running) {
+			throw new IllegalStateException();
 		}
+		sensors.add(sensor);
 	}
 	
-	/**
-	 * Schedule sensor reading.
-	 *
-	 * @param sensorReading the sensor reading
-	 */
-	private void scheduleSensorReading(SensorReading sensorReading) {
-	    threadPool.scheduleAtFixedRate(sensorReading, SensorReading.INITIAL_DELAY_OF_READING, sensorReading.getPeriodValue(), SensorReading.PERIOD_UNIT);
-	}
-	
-	/**
-	 * Start.
-	 */
 	public void start() {
-		for(SensorReading sensorReading : sensorReadings) {
-			scheduleSensorReading(sensorReading);
+		running = true;
+		while (!sensors.isEmpty()) {
+			final Sensor<?> sensor = sensors.poll();
+			threadPool.scheduleAtFixedRate(new Runnable() {
+				@Override
+				public void run() {
+					sensor.update();
+				}
+			}, 0, sensor.getPeriod(), TimeUnit.MILLISECONDS);
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.AutoCloseable#close()
-	 */
 	public void close() {
 		threadPool.shutdownNow();
 	}
