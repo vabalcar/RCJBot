@@ -55,6 +55,10 @@ public class RCJBot<T extends Serializable> implements JBot<T> {
         serializer = new SerializingDataListener<>(getProvidedDataType(), outputStream);
         addListener(serializer);
     }
+    
+    public PTPConnection getConnection() {
+		return connection;
+	}
 
     @Override
     public boolean hasStarted() {

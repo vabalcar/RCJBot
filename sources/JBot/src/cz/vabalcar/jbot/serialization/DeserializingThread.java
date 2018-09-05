@@ -33,6 +33,14 @@ public class DeserializingThread extends Thread implements AutoCloseable {
 	/** The connection end listeners. */
 	private List<Callable<Void>> connectionEndListeners = new ArrayList<>();
 	
+	public DeserializingThread() {
+	}
+	
+	public DeserializingThread(DeserializingThread deserializingThread) {
+		streamlisteners = deserializingThread.streamlisteners;
+		connectionEndListeners = deserializingThread.connectionEndListeners;
+	}
+	
 	/**
 	 * Sets the input stream.
 	 *

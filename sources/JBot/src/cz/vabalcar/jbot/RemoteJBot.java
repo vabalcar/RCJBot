@@ -28,12 +28,12 @@ public class RemoteJBot<T extends Serializable> extends DataProviderImpl<T> impl
     }
     
     public boolean connectTo(String jbotName, int port) throws IOException {
-        this.connection = new PTPConnection(Role.CLIENT, port, port, jbotName);
+        connection = new PTPConnection(Role.CLIENT, port, port, jbotName);
         if (connection.connect()) {
             movementProcessor = new MovementSerializer(connection.getOutputStream());
             
             if (deserializer.getState() != Thread.State.NEW) {
-                deserializer = new DeserializingThread();
+                deserializer = new DeserializingThread(deserializer);
             }
             deserializer.setInputStream(connection.getInputStream());
             deserializer.registerDataProvider(SensorDataEvent.class, this);
@@ -44,6 +44,10 @@ public class RemoteJBot<T extends Serializable> extends DataProviderImpl<T> impl
             return false;
         }
     }
+    
+    public PTPConnection getConnection() {
+		return connection;
+	}
     
     @Override
 	public String getName() {
@@ -72,9 +76,12 @@ public class RemoteJBot<T extends Serializable> extends DataProviderImpl<T> impl
     
     @Override
     public void close() throws Exception {
-        if (deserializer != null) {
+    	if (deserializer != null) {
             deserializer.close();
         }
+    	if (connection != null) {
+    		connection.close();
+    	}
         super.close();
     }
 }

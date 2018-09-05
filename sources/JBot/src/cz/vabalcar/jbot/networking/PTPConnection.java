@@ -8,8 +8,8 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.concurrent.Semaphore;
 
 public class PTPConnection implements AutoCloseable {
     
@@ -21,6 +21,10 @@ public class PTPConnection implements AutoCloseable {
 	private ServerSocket serverSocket;
 	private Socket socket;
 	private NetworkInterface usedNI;
+	
+	private final Semaphore stateSemaphore = new Semaphore(1);
+	private BroadcastReceiver broadcastReceiver;
+	private RepeatingBroadcaster broadcaster;
 	
 	public PTPConnection(Role role, int localPort, int remotePort, String connectionName) {
         this.role = role;
@@ -54,78 +58,108 @@ public class PTPConnection implements AutoCloseable {
 	}
 	
 	public boolean isConnected() {
-	    return socket != null && socket.isConnected();
+	    return socket != null && socket.isConnected() && !socket.isClosed();
 	}
 	
+	
 	public boolean connect() {
-		switch (role) {
-		case SERVER:
-			if (!connectAsServer()) {
-				return false;
-			}
-			break;
-		case CLIENT:
-			if (!connectAsClient()) {
-				return false;
-			}
-			break;
-		default:
+		try {
+			stateSemaphore.acquire();
+		} catch (InterruptedException e) {
 			return false;
 		}
 		
-		try {
-	    	socket.setTcpNoDelay(true);
-	    	usedNI = NetworkInterfaces.getPhysicalNI(socket.getLocalAddress());
-	    	return true;
-        } catch (SocketException e) {
-        	return false;
-        }
+		boolean success = false;
+		
+		switch (role) {
+		case SERVER:
+			success = connectAsServer();
+			break;
+		case CLIENT:
+			success = connectAsClient();
+			break;
+		default:
+			break;
+		}
+		
+		if (success) {
+			try {
+		    	socket.setTcpNoDelay(true);
+		    	usedNI = NetworkInterfaces.getPhysicalNI(socket.getLocalAddress());
+	        } catch (SocketException e) {
+	        	success = false;
+	        }
+		}
+		
+		stateSemaphore.release();
+		return success;
 	}
 	
 	private boolean connectAsServer() {
 		try(RepeatingBroadcaster broadcaster = new RepeatingBroadcaster(localPort, remotePort);
 			ServerSocket serverSocket = new ServerSocket(localPort)) {
-			broadcaster.broadcastRepeatedly(broadcastMessage);
+			this.broadcaster = broadcaster;
 			this.serverSocket = serverSocket;
+			
+			broadcaster.broadcastRepeatedly(broadcastMessage);
 		    System.out.println("Waiting on port " + localPort + " for client...");
+		    
+		    stateSemaphore.release();
 		    socket = serverSocket.accept();
-			return true;
-		} catch (SocketException e) {
-			return false;
-		} catch (UnknownHostException e) {
-			return false;
-		} catch (IOException e) {
+		    stateSemaphore.acquire();
+			
+		    return isConnected();
+		} catch (Exception e) {
 			return false;
 		} finally {
+			broadcaster = null;
 			serverSocket = null;
 		}
 	}
 	
 	private boolean connectAsClient() {
 		try(BroadcastReceiver receiver = new BroadcastReceiver(localPort)) {
-		    System.out.println("Connecting...");
+		    this.broadcastReceiver = receiver;
+			
 		    DatagramPacket receivedPacket = new DatagramPacket(new byte[broadcastMessage.length], broadcastMessage.length);
+		    System.out.println("Connecting...");
+		    
+		    stateSemaphore.release();
 		    receiver.receive(receivedPacket);
+		    stateSemaphore.acquire();
+		    
 		    if (Arrays.equals(receivedPacket.getData(), broadcastMessage)) {
 		    	socket = new Socket(receivedPacket.getAddress(), remotePort);
 				return true;
 		    } else {
-		    	System.out.println(new String(receivedPacket.getData()) + " vs " + new String (broadcastMessage));
+		    	return false;
 		    }
-		    return false;
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
 			return false;
+		} finally {
+			broadcastReceiver = null;
 		}
 	}
 	
 	@Override
 	public void close() throws IOException {
+		try {
+			stateSemaphore.acquire();
+		} catch (InterruptedException e) {
+			// Just continue
+		}
+		if (broadcaster != null) {
+			broadcaster.close();
+		}
+		if (broadcastReceiver != null) {
+			broadcastReceiver.close();
+		}
 	    if (serverSocket != null) {
 	        serverSocket.close();
 	    }
 		if (socket != null) {
 			socket.close();
 		}
+		stateSemaphore.release();
 	}
 }

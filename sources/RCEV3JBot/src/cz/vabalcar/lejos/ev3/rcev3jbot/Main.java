@@ -66,7 +66,7 @@ public class Main {
         	notifyError("Error while reading configuration file!");
             return false;
         } catch (Exception e) {
-        	notifyError(e.getMessage());
+        	notifyError(e.toString());
             return false;
         }
         return true;
@@ -115,8 +115,8 @@ public class Main {
     
     private static void notifyError(String message) {
     	LED.staticRed();
-    	System.err.println(message);
-    	System.out.println("Press any key to continue...");
+    	System.out.println(message);
+    	System.out.println("Press any key to exit the program...");
     	LocalEV3.ev3.getKeys().waitForAnyPress();
     }
     

@@ -99,4 +99,16 @@ public class NetworkInterfaces {
 		}
 		return null;
 	}
+	
+	public static Inet4Address getIPv4Address(NetworkInterface networkInterface) {
+		Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
+		InetAddress address;
+		while(addresses.hasMoreElements()) {
+			address = addresses.nextElement();
+			if (address instanceof Inet4Address) {
+				return (Inet4Address) address;
+			}
+		}
+		return null;
+	}
 }
