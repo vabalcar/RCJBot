@@ -1,0 +1,73 @@
+<?xml version = "1.0" ?>
+<project basedir = "sources" default = "Default">
+    <property file = "build.properties" />
+    <property file = "../run.properties" />
+    <property file = "../ev3.properties" />
+    
+    <import file = "${basedir}/${ant.resources.dir}/libImport.xml" />
+    <import file = "${basedir}/${ant.resources.dir}/macros.xml" />
+    
+    <target name = "Invoke">
+        <runAnt dir = "." />
+    </target>
+    
+    <target name = "Clear" depends = "Invoke">
+        <delete dir = "${export.base.dir}" />
+    </target>
+    
+    <target name = "Build" depends = "Invoke" />
+    <target name = "Export" depends = "Invoke" />
+    <target name = "Javadoc" depends = "Invoke" />
+    <target name = "JavadocClear" depends = "Invoke" />
+    
+    <target name = "ExportOverride">
+        <antCall target = "Export" inheritAll = "false" />
+    </target>
+    
+    <target name = "JavadocOverride">
+        <antCall target = "Javadoc" inheritAll = "false" />
+    </target>
+    
+    <target name = "PCRun" depends = "ExportOverride">
+        <condition property = "run.as.new.processes" value = "false">
+            <not>
+                <isset property = "run.as.new.processes" />
+            </not>
+        </condition>
+        <java dir = "${export.base.dir}/${pc.working.set.to.run}"
+              jar = "${export.base.dir}/${pc.working.set.to.run}/${pc.project.to.run}.jar"
+              fork = "true"
+              spawn = "${run.as.new.processes}" />
+        <if>
+            <not>
+                <equals arg1 = "${run.as.new.processes}" arg2 = "false" />
+            </not>
+            <then>
+                <echo>${pc.project.to.run}.jar has been executed.</echo>
+            </then>
+        </if>
+    </target>
+    
+     <target name = "LejosUpload" depends = "ExportOverride">
+        <scp todir = "root@${ev3.hostname}:/home/lejos/programs" password = "" trust = "true">
+            <fileset dir = "${export.base.dir}/${lejos.working.set.to.upload}" includes = "**" />
+        </scp>
+    </target>
+    
+    <target name = "LejosRun" depends = "LejosUpload">
+        <property name = "remote.run.command" value = "cd ~/lejos/bin/utils;echo &quot;s&quot; > menufifo;cd /home/lejos/programs;echo &quot;Running ${lejos.project.to.run}...&quot;;jrun -jar ${lejos.project.to.run}.jar;cd ~/lejos/bin/utils;echo &quot;r&quot; > menufifo" />
+        <sshexec host = "${ev3.hostname}"
+                 username = "root"
+                 password = ""
+                 trust = "true"
+                 command = "${remote.run.command}" />
+    </target>
+    
+    <target name = "PrepareRunAll">
+        <property name = "run.as.new.processes" value = "true" />
+    </target>
+    
+    <target name = "RunAll" depends = "PrepareRunAll, PCRun, LejosRun" />
+    
+    <target name = "Default" depends = "ExportOverride, JavadocOverride" />
+</project>

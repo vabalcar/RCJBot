@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">RCJBotControllerCommon</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="driving_methods_title">Choose driving method</string>
+
+    <string name="missing_activity_message">You have forgotten to set a child view of an instance of the RCJBotControllerActivity!</string>
+
+    <string name="action_connect">Connect</string>
+    <string name="event_connected">Connected</string>
+    <string name="not_connected">Not connected</string>
+    <string name="action_disconnect">Disconnect</string>
+
+    <string name="disconnection_alert_dialog_title">Connection interrupted</string>
+    <string name="disconnection_alert_dialog_message">JBot has disconnected, maybe it\'s caused by a network problem.</string>
+
+    <string name="ok">OK</string>
+    <string name="minimize">Minimize?</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+</resources>

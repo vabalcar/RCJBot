@@ -1,0 +1,6 @@
+<?xml version = "1.0" ?>
+<project name = "SensorDataVisualizer" basedir = ".." default = "Build">
+    <property file = "${ant.project.name}/project.properties" />
+    <property file = "build.properties" />
+    <import file = "${basedir}/${ant.resources.dir}/common.xml" />
+</project>

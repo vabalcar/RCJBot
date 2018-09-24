@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">RCJBot Controller</string>
+
+    <string name="input_error_dialog_title">Input error</string>
+
+    <string name="ok">OK</string>
+
+    <string name="name">Name</string>
+    <string name="port">Port</string>
+    <string name="connect">Connect</string>
+
+    <string name="arrow_up">U</string>
+    <string name="arrow_down">D</string>
+    <string name="arrow_left">L</string>
+    <string name="arrow_right">R</string>
+
+    <string name="motor_1">M1</string>
+    <string name="motor_2">M2</string>
+    <string name="motor_3">M3</string>
+    <string name="motor_4">M4</string>
+</resources>

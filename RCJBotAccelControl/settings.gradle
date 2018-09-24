@@ -1,0 +1,1 @@
+include ':app', ':JBot', ':Common', ':RCJBotControllerCommon', ':AndroidSensorDataVisualizer', ':SensorDataVisualizer', ':RCJBotSimpleControllerActivity'

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">RCJBot Accel Control</string>
+    <string name="tilt_x">Tilt x: </string>
+    <string name="tilt_y">Tilt y: </string>
+</resources>

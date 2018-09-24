@@ -1,0 +1,11 @@
+<resources>
+    <string name="motor_action_select_dialog_title">Select motor action</string>
+    <string name="action_select_motor_action">Select motor action</string>
+    <string name="app_name">RCJBotSimpleControllerActivity</string>
+    <string name="run_motor">Run Motor</string>
+    <string name="forward">Forward</string>
+    <string name="backward">Backward</string>
+    <string name="none">None</string>
+    <string name="motor">Motor: </string>
+    <string name="direction">Direction: </string>
+</resources>
