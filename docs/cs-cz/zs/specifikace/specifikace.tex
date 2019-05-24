@@ -1,0 +1,125 @@
+\documentclass[12pt, ngerman]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{last page}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{sectsty}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{csquotes}
+
+\MakeOuterQuote{"}
+
+\newcommand{\PROGRAM}{RCJBot}
+\newcommand{\PREDMET}{Java}
+\newcommand{\AUTOR}{Václav Balcar}
+
+\hypersetup{
+    pdfsubject={\PREDMET},
+    pdfauthor={\AUTOR},
+    pdftitle={\PREDMET\ - \PROGRAM}
+}
+
+\definecolor{BackgroundColor}{HTML}{ffffff}
+\definecolor{FontColor}{HTML}{152525}
+\definecolor{SectionColor}{HTML}{216666}
+\definecolor{SubSectionColor}{HTML}{3b8787}
+\definecolor{SubSubSectionColor}{HTML}{4aa8a8}
+
+\renewcommand{\contentsname}{Obsah}
+\renewcommand{\figurename}{Obr.}
+
+\pagecolor{BackgroundColor}
+\color{FontColor}
+\sectionfont{\color{SectionColor}}
+\subsectionfont{\color{SubSectionColor}}
+\subsubsectionfont{\color{SubSubSectionColor}}
+
+\geometry{a4paper, total={190mm, 277mm}, left=20mm, right=20mm, top=20mm, bottom=20mm}
+\setlength{\parindent}{0mm}
+
+\title{Specifikace programu \PROGRAM, zápočtového programu z předmětu \PREDMET}
+\date{ZS 2017/2018}
+\author{\AUTOR, 2. ročník, 31. studijní skupina}
+
+\fancyhf{}
+\lhead{Specifikace}
+\rhead{\PROGRAM}
+\rfoot{\thepage}
+\pagestyle{fancy}
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=blue
+}
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\newpage
+\pagenumbering{arabic}
+
+\section{Uživatelská specifikace}
+\subsection{Účel}
+RCJBot bude softwarové řešení dálkového řízení a monitorování mobilního legového robota (postaveného ze stavebnice \href{https://www.lego.com/en-us/mindstorms/products/mindstorms-ev3-31313}{Lego 31313 MINDSTORMS EV3}) přes počítačovou síť pomocí  dalšího počítače.
+
+\subsection{Ovládání}
+Softwarové řešení bude mít dvě oddělené části. První bude program, který poběží v řídící jednotce robota, druhá bude program, který poběží v počítači, pomocí kterého bude robot ovládán. Oba programy budou navrženy tak, aby byly pro uživatele maximálně přívětivé na ovládání a aby nevyžadovaly jiné než nezbytné technické znalosti k jejich používání. Program pro počítač bude mít GUI, program pro robota "text-based user interface" (což je vzhledem k hardwarovým možnostem robota ten nejpohodlnější poskytnutelný způsob interakce s programem v něm běžícím). Samotné dálkové řízení pak bude realizováno pomocí stisků kláves na klávesnici řídícího počítače (mapování kláves na příkazy pro pohyb robota bude konfigurovatelné). Monitoring dat z robota v počítači pak bude vypadat obdobně jako vizualizace dat z parkovacích senzorů v autech. Vizualizace bude realizována tak, aby byla co nejpřehlednější a bude konfigurovatelná.
+
+\subsection{Podporované HW komponenty robota}
+Monitorovat a vizualizovat data bude možné ze všech senzorů obsažených v "setu" Lego 31313 Mindstorms EV3. Stejně tak bude možné používat motory obsažené v tomto setu.
+
+\subsection{Požadavky}
+\subsubsection{Na robota}
+Program bude navržen tak, aby pomocí něj bylo možné přirozeným způsobem ovládat  mobilního robota, který bude k pohybu využívat diferenciální, pásový nebo trojkolový podvozek (v případě trojkolky bude muset být prostředí kolo pasivní a volně se otáčející nebo ekvivalentně se chovající prvek). Dále bude robot moct používat dálkoměr na detekci blížící se překážky, dotykový senzor pro detekci nárazu a color senzor pro detekci barvy povrchu, po němž se robot pohybuje. Data z těchto senzorů budou vizualizována výše popsaným způsobem a jiné využití těchto senzorů způsobí, že vizualizace bude nepřirozená. Ovšem vizualizaci dat z  jednotlivých senzorů půjde vypnout a k dispozici bude i textová verze monitorování dat z robota, tudíž bude možné pomocí tohoto programu číst data z podporovaných senzorů, které budou využity jiným než výše zmíněným způsobem. Motory, které nebudou využity v rámci podvozku, půjde ovládat samostatně a manuálně. Tudíž je možné vybudovat kromě podvozku jakoukoliv další konstrukci využívající motory a řídit ji na dálku.
+
+\subsubsection{Na uživatele}
+Na uživatele žádné zvláštní požadavky kladeny nebudou, pouze bude muset být schopný nainstalovat potřebný software do robota a do ovládajícího počítače.
+
+\subsubsection{Na systém uživatele}
+Pro běh programu pro počítač bude třeba mít na něm nainstalované JRE.\\\\
+Dále bude muset uživatel zajistit připojení řídící jednotky robota a ovládajícího počítače ke společné počítačové síti, což přináší především požadavek na kompatibilní NIC připojitelné přes USB k robotovi. Neoficiální seznam testovaných podporovaných zařízení je následující:\\
+
+Kompatibilní Wifi NIC:
+\begin{enumerate}[leftmargin=5mm]
+\item Netgear Wireless-N 150 usb adapter (WNA1100 Chipset)
+\item Edimax EW-7811UN micro WiFi dongle
+\end{enumerate} 
+
+Kompatibilní Ethernet NIC:
+\begin{enumerate}[leftmargin=5mm]
+\item Apple USB ethernet adapter
+\end{enumerate}
+
+V robotovi bude nutné mít nainstalovaný leJOS (vizte programátorskou specifikaci).
+K tomu bude třeba mít microSDHC paměťovou kartu s kapacitou 2-32GB. Pro více informaci o instalaci leJOSu vizte \href{https://sourceforge.net/p/lejos/wiki/Windows Installation/}{návod na instalaci od vývojářů leJOSu}.
+
+\section{Programátorská specifikace}
+\subsection{Program pro robota}
+Program pro robota bude využívat softwarové řešení portování JVM na řídící jednotky robotů Lego Mindstorms mající název leJOS obsahující mimo jiné rozsáhlou knihovnu umožňující ovládání hardwarových komponent robota. Konkrétně v našem případě budeme používat verzi \href{http://www.lejos.org/ev3.php}{leJOS EV3}, což je (jak název napovídá) verze leJOSu pro Lego Mindstorms EV3. Program bude fungovat jako server vykonávající požadavky připojeného klienta. Požadavky budou moct být například na změnu polohy (příkazy znamenající "jeď dopředu o n cm", "otoč se o n stupňů" atp.), na zahájení posílání dat z daných senzorů, na ukončení činnosti apod. Jak bylo zmíněno v uživatelské dokumentaci, program bude navržen tak, aby nebyl závislý na konkrétním sestavení robota, pokud robot bude splňovat konstrukční požadavky zmíněné v uživatelské dokumentaci (především ty týkající se podvozku). Proto bude nutné robota při prvním spuštění (popřípadě před ním) nakonfigurovat, což bude možné s využitím displaye a tlačítek na řídící jednotce nebo dodáním patřičného konfiguračního souboru. Konfigurace bude zahrnovat předání informací o zapojení komponent robota, zadání parametrů podvozku, případně i dalších informací. Konfigurace bude uložena v textovém souboru na FS robota.
+
+\subsection{Program pro počítač}
+Program pro počítač bude klasická desktopová aplikace s GUI. GUI bude napsané s použitím Swingu a bude navržené tak, aby s jeho pomocí mohl uživatel ovládat celý program, tzn. řídit proces připojení robota k počítači, měnit nastavení nebo provádět samotné řízení a monitorování dat ze senzorů. Program bude sloužit jako (síťový) klient a bude robotovi posílat příkazy a vizualizovat (popřípadě vypisovat) data od robota přijatá. Vizualizace dat z robotových senzorů bude naprogramována s využitím tříd pro práci s 2D grafikou ve Swingu. Vizualizace bude parametrizovatelná (například bude možné měnit rychlost její aktualizace), bude se chovat přirozeně vzhledem k oknu programu (například se bude měnit velikost vizualizace podle velikosti okna aplikace apod.). Program pro počítač bude umět na požádání logovat veškerou svou činnost nebo nějakou její (logování-hodnou) podmnožinu, například pouze informace týkající se síťování.
+
+\subsection{Společná část}
+Jak program pro robota, tak program pro počítač budou používat knihovnu umožňující jejich vzájemnou komunikaci po místní síti (v rámci jedné broadcast domény), kterou vytvořím v rámci zápočtového programu. Tato knihovna bude (co se síťování týče) stavět na třídách z balíčku "java.net" a bude navržena tak, aby se nemusela vytvářet jedna verze pro robota a jedna pro počítač. Konfigurace obou programů bude vždy uložena v textovém souboru ve stejné složce, v jaké bude samotný program. Všechny chyby, ke kterým může za běhu programů dojít, budou co nejpřívětivějším způsobem oznámeny uživateli na display řídící jednotky robota nebo jako okno s chybovou zprávou v GUI programu na počítači.
+
+\subsection{O komunikaci}
+Komunikace mezi robotem a počítačem bude mít point-to-point topologii, čili vždy bude k robotovi (serveru) připojen nejvýše jeden ovládací počítač (klient).\\
+Navázání spojení bude plně automatizované. \\
+Obsahem komunikace budou zaserializované objekty reprezentující příkaz nebo informaci pro robota nebo informaci pro počítač. Část komunikace bude prováděna s užitím protokolu TCP, část s užitím UDP. Zde si nechám určitou "specifikační volnost", protože bude třeba finální komunikační protokol (na aplikační vrstvě) doladit, aby vše fungovalo co nejbezpečněji (ku příkladu bude zajištěno, aby robot skutečně ukončil svůj aktuální pohyb, pokud si to uživatel bude přát).\\
+Po ukončení ovládání robota bude robot vyčkávat na opětovné připojení nějakého klienta.
+
+\subsection{Dodatek ke GUI a TUI}
+GUI programu pro počítač i TUI programu pro robota budou implementovat MVC pattern.
+
+\subsection{O testovacím robotovi}
+Testovací robot bude mít pásový podvozek a bude využívat všech senzorů ze setu Lego 31313 Mindstorms EV3. Dále bude mít sestavené motorem ovládané dělo, které je součástí daného Lego setu. Na tomto robotovi je pak možné testovat a prezentovat všechny funkce programu RCJBot.
+
+\subsection{Dodatek na závěr}
+Při práci na programu mám v plánu se netrviálně věnovat síťování, vláknování, 2D grafice, tvorbě GUI a také serializaci. Pokud by se mé téma ukázalo jako nedostatečně obsáhlé, rozšířím program i o lokalizaci (udělám českou a anglickou verzi), ovládání pomocí aplikace pro Android nebo například ovládání pomocí k počítači připojenému joysticku.
+\end{document}
